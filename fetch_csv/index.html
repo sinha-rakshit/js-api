@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV</title>
+  </head>
+  <body>
+    <script>
+      getData();
+      async function getData() {
+        const response = await fetch("main.csv");
+        const data = await response.text();
+
+        //split() is used split a string into an array of substrings, here it split('\n'), splits the string where line ends
+
+        // slice() is used to extract a portion of an array or string
+        const table = data.split("\n").slice(1);
+        for (let row = 0; row < table.length; row++) {
+          const columns = table[row].split(",");
+          const year = columns[0];
+          const temp = columns[1];
+          console.log(year, temp);
+        }
+        // rows.forEach((elt) => {
+        //   const row = elt.split(",");
+        //   const year = row[0];
+        //   const temp = row[1];
+        //   console.log(year, temp);
+        // });
+      }
+    </script>
+  </body>
+</html>
