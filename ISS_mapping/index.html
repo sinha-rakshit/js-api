@@ -32,7 +32,7 @@
     <div id="map"></div>
 
     <script>
-      const myMap = L.map("map").setView([0, 0], 2); //L is used in Leaflet.json library
+      const myMap = L.map("map").setView([0, 0], 4); //L is used in Leaflet.json library
 
       const marker = L.marker([0, 0]).addTo(myMap);
 
@@ -48,7 +48,12 @@
         const response = await fetch(api_url);
         const data = await response.json();
 
-        myMap.setView([data.latitude, data.longitude], myMap.getZoom());
+        let firstTime = true;
+
+        if (firstTime == true) {
+          myMap.setView([data.latitude, data.longitude], myMap.getZoom());
+          firstTime = false;
+        }
         marker.setLatLng([data.latitude, data.longitude]);
 
         document.getElementById("lat").textContent = data.latitude;
@@ -56,6 +61,8 @@
       }
 
       getData();
+
+      setInterval(getData, 1000);
     </script>
   </body>
 </html>
