@@ -1,0 +1,61 @@
+<!-- Read the documentation for Leaflet.json on  https://leafletjs.com/-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <style>
+      #map {
+        height: 180px;
+      }
+    </style>
+    <title>Fetch JSONvfrom API</title>
+  </head>
+  <body>
+    <h3>Where is ISS</h3>
+    <p>
+      Latitude: <span id="lat"></span> <br />
+      Longitude: <span id="lon"></span>
+    </p>
+    <div id="map"></div>
+
+    <script>
+      const myMap = L.map("map").setView([0, 0], 2); //L is used in Leaflet.json library
+
+      const marker = L.marker([0, 0]).addTo(myMap);
+
+      const attributes =
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+      const tilesURL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"; //mot an actual URL but a conjuction on how to open the URL(z-zoom,x-latitude,y-longitude)
+      const tiles = L.tileLayer(tilesURL, { attributes });
+      tiles.addTo(myMap);
+
+      const api_url = "https://api.wheretheiss.at/v1/satellites/25544s";
+
+      async function getData() {
+        const response = await fetch(api_url);
+        const data = await response.json();
+
+        myMap.setView([data.latitude, data.longitude], myMap.getZoom());
+        marker.setLatLng([data.latitude, data.longitude]);
+
+        document.getElementById("lat").textContent = data.latitude;
+        document.getElementById("lon").textContent = data.longitude;
+      }
+
+      getData();
+    </script>
+  </body>
+</html>
