@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h2>Global Average Temperature 1880-2021</h2>
+    <canvas id="chart"></canvas>
+    <script>
+      ChartIt();
+      getData();
+
+      async function ChartIt() {
+        const data = await getData();
+        const ctx = document.getElementById("chart");
+        const myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.x_year,
+            datasets: [
+              {
+                label: "Global Average Temperature of World in °C",
+                data: data.y1_temp,
+                borderWidth: 2,
+              },
+              {
+                label:
+                  "Global Average Temperature of Northern Hemisphere in °C",
+                data: data.y2_temp,
+                borderWidth: 2,
+              },
+              {
+                label:
+                  "Global Average Temperature of Southern Hemisphere in °C",
+                data: data.y3_temp,
+                borderWidth: 2,
+              },
+            ],
+          },
+
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                min: 13.4,
+                max: 15.4,
+                ticks: {
+                  // Include a dollar sign in the ticks
+                  callback: function (value, index, values) {
+                    return value + "°";
+                  },
+                  stepSize: 0.2,
+                },
+              },
+            },
+          },
+        });
+      }
+      async function getData() {
+        const x_year = [];
+        const y1_temp = [];
+        const y2_temp = [];
+        const y3_temp = [];
+
+        const response = await fetch("main.csv");
+        const data = await response.text();
+
+        const table = data.split("\n").slice(1);
+        for (let row = 0; row < table.length; row++) {
+          const columns = table[row].split(",");
+
+          const year = columns[0];
+          x_year.push(year);
+
+          const temp = columns[1];
+          y1_temp.push(parseFloat(temp) + 14);
+
+          const NHem = columns[2];
+          y2_temp.push(parseFloat(NHem) + 14);
+
+          const SHem = columns[3];
+          y3_temp.push(parseFloat(SHem) + 14);
+        }
+        return { x_year, y1_temp, y2_temp, y3_temp };
+      }
+    </script>
+  </body>
+</html>
