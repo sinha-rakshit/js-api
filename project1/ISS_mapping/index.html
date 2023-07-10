@@ -26,8 +26,8 @@
   <body>
     <h3>Where is ISS</h3>
     <p>
-      Latitude: <span id="lat"></span> <br />
-      Longitude: <span id="lon"></span>
+      Latitude: <span id="lat"></span>°<br />
+      Longitude: <span id="lon"></span>°
     </p>
     <div id="map"></div>
 
@@ -56,8 +56,8 @@
         }
         marker.setLatLng([data.latitude, data.longitude]);
 
-        document.getElementById("lat").textContent = data.latitude;
-        document.getElementById("lon").textContent = data.longitude;
+        document.getElementById("lat").textContent = data.latitude.toFixed(4);
+        document.getElementById("lon").textContent = data.longitude.toFixed(4);
       }
 
       getData();
