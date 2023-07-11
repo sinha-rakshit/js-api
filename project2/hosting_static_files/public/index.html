@@ -26,13 +26,15 @@
   <body>
     <h3>My Location Tracker</h3>
 
-    Latitude: <span id="Latitude"></span>&deg<br />
-    Longitude: <span id="Longitude"></span>&deg<br />
+    Latitude: <span id="Latitude"></span>&deg;<br />
+    Longitude: <span id="Longitude"></span>&deg;<br />
+
+    <button id="geolocate">Geolocate</button>
 
     <div id="map"></div>
 
     <script>
-      const myMap = L.map("map").setView([0, 0], 4); //L is used in Leaflet.json library
+      const myMap = L.map("map").setView([0, 0], 4);
 
       const marker = L.marker([0, 0]).addTo(myMap);
 
@@ -44,23 +46,28 @@
 
       let firstTime = true;
 
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const Lat = position.coords.latitude;
-          const Lng = position.coords.longitude;
+      document
+        .getElementById("geolocate")
+        .addEventListener("click", (event) => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              const Lat = position.coords.latitude;
+              const Lng = position.coords.longitude;
 
-          if (firstTime == true) {
-            myMap.setView([Lat, Lng], myMap.getZoom());
-            firstTime = false;
+              if (firstTime == true) {
+                myMap.setView([Lat, Lng], myMap.getZoom());
+                firstTime = false;
+              }
+              marker.setLatLng([Lat, Lng]);
+              console.log(Lat, Lng);
+
+              document.getElementById("Latitude").textContent = Lat;
+              document.getElementById("Longitude").textContent = Lng;
+            });
+          } else {
+            console.log("Geolocation not activated");
           }
-          marker.setLatLng([Lat, Lng]);
-
-          document.getElementById("Latitude").textContent = Lat;
-          document.getElementById("Longitude").textContent = Lng;
         });
-      } else {
-        console.log("Geolocation not activated");
-      }
     </script>
   </body>
 </html>
