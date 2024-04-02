@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <canvas id="chart"></canvas>
+    <script>
+      ChartIt();
+      getData();
+
+      async function ChartIt() {
+        const data = await getData();
+        const ctx = document.getElementById("chart");
+        const myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.x_year,
+            datasets: [
+              {
+                label:
+                  "Combined Land-Surface Air and Sea-Surface Water Temperature in °C",
+                data: data.y_temp,
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                min: 13.4,
+                max: 15.2,
+                ticks: {
+                  // Include a dollar sign in the ticks
+                  callback: function (value, index, values) {
+                    return value + "°";
+                  },
+                  stepSize: 0.2,
+                },
+              },
+            },
+          },
+        });
+      }
+      async function getData() {
+        const x_year = [];
+        const y_temp = [];
+
+        const response = await fetch("main.csv");
+        const data = await response.text();
+
+        //split() is used split a string into an array of substrings, here it split('\n'), splits the string where line ends
+
+        // slice() is used to extract a portion of an array or string
+        const table = data.split("\n").slice(1);
+        for (let row = 0; row < table.length; row++) {
+          const columns = table[row].split(",");
+          const year = columns[0];
+          x_year.push(year);
+          const temp = columns[1];
+          y_temp.push(parseFloat(temp) + 14); //because the inputted value is a string and not a integer
+          console.log(year, temp);
+        }
+        return { x_year, y_temp };
+      }
+    </script>
+  </body>
+</html>

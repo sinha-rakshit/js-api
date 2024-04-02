@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/chart.min.js"></script>
+    <title>Plain-text(Excercise)</title>
+  </head>
+  <body>
+    <p id="text" />
+    <script>
+      console.log("about to fetch a text");
+      catchPoem()
+        .then((response) => {
+          document.getElementById("text").innerText = response;
+          console.log("done");
+        })
+        .catch((error) => {
+          console.log("error!");
+          console.error(error);
+        });
+
+      async function catchPoem() {
+        const response = await fetch("plain.txt");
+        return await response.text();
+      }
+    </script>
+  </body>
+</html>

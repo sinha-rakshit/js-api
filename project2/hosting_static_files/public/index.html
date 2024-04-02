@@ -1,0 +1,73 @@
+<!-- https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <style>
+      #map {
+        height: 600px;
+      }
+    </style>
+    <title>Server-testing</title>
+  </head>
+  <body>
+    <h3>My Location Tracker</h3>
+
+    Latitude: <span id="Latitude"></span>&deg;<br />
+    Longitude: <span id="Longitude"></span>&deg;<br />
+
+    <button id="geolocate">Geolocate</button>
+
+    <div id="map"></div>
+
+    <script>
+      const myMap = L.map("map").setView([0, 0], 4);
+
+      const marker = L.marker([0, 0]).addTo(myMap);
+
+      const attributes =
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+      const tilesURL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+      const tiles = L.tileLayer(tilesURL, { attributes });
+      tiles.addTo(myMap);
+
+      let firstTime = true;
+
+      document
+        .getElementById("geolocate")
+        .addEventListener("click", (event) => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              const Lat = position.coords.latitude;
+              const Lng = position.coords.longitude;
+
+              if (firstTime == true) {
+                myMap.setView([Lat, Lng], myMap.getZoom());
+                firstTime = false;
+              }
+              marker.setLatLng([Lat, Lng]);
+              console.log(Lat, Lng);
+
+              document.getElementById("Latitude").textContent = Lat;
+              document.getElementById("Longitude").textContent = Lng;
+            });
+          } else {
+            console.log("Geolocation not activated");
+          }
+        });
+    </script>
+  </body>
+</html>
